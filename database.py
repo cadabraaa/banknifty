@@ -64,7 +64,7 @@ def insert_data_into_database(data):
         # Execute the "PE" query
         try:
           conn.execute(query_pe, params_pe)
-          # print("Insert PE successful!")
+          print("Insert PE successful!")
         except Exception as e:
           print(f"Error during PE insertion: {e}")
 
@@ -117,7 +117,7 @@ def insert_data_into_database(data):
         # Execute the "CE" query
         try:
           conn.execute(query_ce, params_ce)
-          # print("Insert CE successful!")
+          print("Insert CE successful!")
         except Exception as e:
           print(f"Error during CE insertion: {e}")
 
