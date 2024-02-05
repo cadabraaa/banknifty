@@ -1,13 +1,14 @@
 from flask import Flask, render_template, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
-from database import insert_data_into_database
+from database import insert_data_into_database, insert_data_into_database_bank
 import os
 
 app = Flask(__name__)
 
 # Global variable to store the previous timestamp
 previous_timestamp = None
+bank_previous_timestamp = None
 
 scheduler = BackgroundScheduler()
 
@@ -42,8 +43,11 @@ def job():
     Fetch data from the API and insert into the database.
     """
   global previous_timestamp
+  global bank_previous_timestamp
+
   # URL of the NSE India API
-  url = 'https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY'
+  url = 'https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY'
+  bank_url = 'https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY'
 
   # Set headers to mimic a browser request
   headers = {
@@ -61,12 +65,12 @@ def job():
 
     # Extract the timestamp using a recursive approach
     current_timestamp = extract_timestamp(data)
-    
+
     if current_timestamp and current_timestamp != previous_timestamp:
-      
+
       # Update the previous timestamp
       previous_timestamp = current_timestamp
-  
+
       timestamp_value = data['records']['timestamp']
       for dict_temp in data['filtered']['data']:
         dict_temp['PE']['timestamp'] = timestamp_value
@@ -74,6 +78,32 @@ def job():
 
       # Insert data into the database
       insert_data_into_database(data)
+      '''
+      BANKNIFTY CODES HERE AFTER
+      '''
+
+      response = requests.get(bank_url, headers=headers)
+
+      # Check if the request was successful (status code 200)
+      if response.status_code == 200:
+        # Parse the JSON content of the response
+        data = response.json()
+
+        # Extract the timestamp using a recursive approach
+        bank_current_timestamp = extract_timestamp(data)
+
+        if bank_current_timestamp and bank_current_timestamp != bank_previous_timestamp:
+
+          # Update the previous timestamp
+          bank_previous_timestamp = bank_current_timestamp
+
+          timestamp_value = data['records']['timestamp']
+          for dict_temp in data['filtered']['data']:
+            dict_temp['PE']['timestamp'] = timestamp_value
+            dict_temp['CE']['timestamp'] = timestamp_value
+
+          # Insert data into the database banknifty
+          insert_data_into_database_bank(data)
 
 
 # Schedule the job to run every 60 seconds
