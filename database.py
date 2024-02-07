@@ -146,7 +146,7 @@ def insert_data_into_database_bank(data):
 
         # Insert "PE" record
         query_pe = text(
-            "INSERT INTO banknifty (Dateandtime, Strike_Price, Calltype, Expiry_Date, Underlying, "
+            "INSERT INTO banknifty1 (Dateandtime, Strike_Price, Calltype, Expiry_Date, Underlying, "
             "Identifier, Open_Interest, Changes, Implied_Volatility, "
             "Last_Price, Total_Buy_Quantity, Total_Sell_Quantity, Bid_Qty, "
             "Bid_Price, Ask_Qty, Ask_Price, Underlying_Value) "
@@ -199,7 +199,7 @@ def insert_data_into_database_bank(data):
 
         # Insert "CE" record
         query_ce = text(
-            "INSERT INTO banknifty (Dateandtime, Strike_Price, Calltype, Expiry_Date, Underlying, "
+            "INSERT INTO banknifty1 (Dateandtime, Strike_Price, Calltype, Expiry_Date, Underlying, "
             "Identifier, Open_Interest, Changes, Implied_Volatility, "
             "Last_Price, Total_Buy_Quantity, Total_Sell_Quantity, Bid_Qty, "
             "Bid_Price, Ask_Qty, Ask_Price, Underlying_Value) "
